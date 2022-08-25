@@ -5,25 +5,39 @@ T = int(input())
 
 for tc in range(1,T+1):
     string = list(map(str,input()))
-    stack = []
+    stack = [0]
     res = 1
-    result =0
+    
+
     for i in string:
         if i in ('(','{'):
             stack.append(i)
-        elif i in(')','}'):
-            if i ==')' and stack.pop() =='(':
+            
+
+        elif i in (')','}'): 
+            if i == ')':
+                if stack[-1] == '(':
+                    stack.pop()
+                elif stack[-1] == 0:
+                    res = 0
+                    break
+                else :
+                    res = 0
+                    break    
+            elif i =='}':
+                if stack[-1] == '{':
+                    stack.pop()
+                elif stack[-1] == 0:
+                    res = 0
+                    break
+                else :
+                    res = 0
+                    break
+            
+            else :
                 res = 0
-            elif i =='}' and stack.pop() == '{':
-                res = 0
-            elif len(stack) == 0:
-                res = 0
-        if len(stack) == 0:
-            result = 1
-        else :
-            result = 0
-    
-    
-    
-    print("#{} {}".format(tc,result))
-    # print(stack)
+                break
+        
+        
+    print("#{} {}".format(tc,res))
+    print(stack)
