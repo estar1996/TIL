@@ -31,7 +31,7 @@ for tc in range(1,T+1):
     for i in range(N):
         data = input().split()
         if len(data) == 2:                              # 자식이 없는 경우, 단말 노드, 피연산자
-            value[int(data[0])] = data[1]               # 인덱스 잘 확인해보기
+            value[int(data[0])] = data[1]               # 
         else:                                           # 자식이 있는 경우, 연산자
             value[int(data[0])] = data[1]
             left[int(data[0])] = int(data[2])
