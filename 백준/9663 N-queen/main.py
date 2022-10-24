@@ -7,7 +7,7 @@ def check(x):
     return True
 def dfs(x):
     global cnt
-    if x == N:
+    if x == N:                                                      # 끝까지 도착하면 성공 + 1
         cnt += 1
     else:
         for i in range(N):
