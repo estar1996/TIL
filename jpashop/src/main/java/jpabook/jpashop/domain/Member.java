@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +25,6 @@ public class Member {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 }
