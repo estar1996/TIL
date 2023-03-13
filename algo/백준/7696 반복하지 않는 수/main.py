@@ -20,6 +20,8 @@ while 1:
             if res == n:
                 print(i)
                 break
+
+    # print(res)
         # else:
         #
         #     for x in range(len(st)):
