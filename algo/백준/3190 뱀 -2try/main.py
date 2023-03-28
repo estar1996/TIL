@@ -34,7 +34,7 @@ while 1:
     sec += 1
     nx += dx[tmp]
     ny += dy[tmp]
-    if nx < 0 or nx >= N or ny < 0 or ny >= N or (nx, ny) in Q:
+    if nx < 0 or nx >= N or ny < 0 or ny >= N or (nx, ny) in Q:         # 종료 조건 ( 벗어나거나, 자기 자신의 몸에 부딪히거나)
         break
     Q.append((nx,ny))
     if arr[nx][ny] == 0:
