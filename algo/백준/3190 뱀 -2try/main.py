@@ -1,7 +1,7 @@
 
 from collections import deque
 import sys
-sys.stdin = open('input.txt')
+# sys.stdin = open('input.txt')
 
 N = int(input())                    # 보드 크기
 K = int(input())                    # 사과의 개수
