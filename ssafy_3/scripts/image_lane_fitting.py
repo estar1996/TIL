@@ -10,7 +10,7 @@ import math
 import random
 import tf
 
-from cv_bridge import CvBridgeError
+from cv_bridge import CvBridgeError, CvBridge
 from sklearn import linear_model
 
 from nav_msgs.msg import Odometry, Path
@@ -35,6 +35,7 @@ class IMGParser:
         rospy.Subscriber("odom", Odometry, self.odom_callback)
 
         self.path_pub = rospy.Publisher('/lane_path', Path, queue_size=30)
+        self.lane_img_pub = rospy.Publisher('/image_lane/compressed', CompressedImage, queue_size=10)
 
         self.img_bgr = None
         self.img_lane = None
@@ -66,44 +67,55 @@ class IMGParser:
         curve_learner = CURVEFit(order=, lane_width= ,y_margin=, x_range=, min_pts=)
         '''
         # END
-        curve_learner = CURVEFit(order=3, alpha=1, lane_width=3, y_margin=0.5, x_range=15, min_pts=30, dx=0.5)
+        curve_learner = CURVEFit(order=3, alpha=10, lane_width=3.5, y_margin=1, x_range=30, min_pts=50, dx=0.5)
         rate = rospy.Rate(10)
 
         while not rospy.is_shutdown():
-
+            # print(self.img_bgr, self.is_status)
             if self.img_bgr is not None and self.is_status == True:
-                img_crop = self.mask_roi(self.img_bgr)
+                # print("ASD")
+                self.bridge = CvBridge()
 
-                img_warp = bev_op.warp_bev_img(img_crop)
+                try:
+                    img_crop = self.mask_roi(self.img_bgr)
 
-                img_lane = self.binarize(img_warp)
+                    img_warp = bev_op.warp_bev_img(img_crop)
 
-                img_f = bev_op.warp_inv_img(img_lane)
+                    img_lane = self.binarize(img_warp)
 
-                lane_pts = bev_op.recon_lane_pts(img_f)
+                    img_f = bev_op.warp_inv_img(img_lane)
 
-                x_pred, y_pred_l, y_pred_r = curve_learner.fit_curve(lane_pts)
+                    lane_pts = bev_op.recon_lane_pts(img_f)
 
-                curve_learner.set_vehicle_status(self.status_msg)
+                    x_pred, y_pred_l, y_pred_r = curve_learner.fit_curve(lane_pts)
 
-                lane_path = curve_learner.write_path_msg(x_pred, y_pred_l, y_pred_r)
+                    curve_learner.set_vehicle_status(self.status_msg)
 
-                xyl, xyr = bev_op.project_lane2img(x_pred, y_pred_l, y_pred_r)
+                    lane_path = curve_learner.write_path_msg(x_pred, y_pred_l, y_pred_r)
 
-                img_lane_fit = self.draw_lane_img(img_lane, xyl[:, 0].astype(np.int32),
-                                                  xyl[:, 1].astype(np.int32),
-                                                  xyr[:, 0].astype(np.int32),
-                                                  xyr[:, 1].astype(np.int32))
+                    xyl, xyr = bev_op.project_lane2img(x_pred, y_pred_l, y_pred_r)
 
-                self.path_pub.publish(lane_path)
+                    img_lane_fit = self.draw_lane_img(img_lane, xyl[:, 0].astype(np.int32),
+                                                      xyl[:, 1].astype(np.int32),
+                                                      xyr[:, 0].astype(np.int32),
+                                                      xyr[:, 1].astype(np.int32))
 
-                cv2.imshow("birdview", img_lane_fit)
-                cv2.imshow("img_warp", img_warp)
-                cv2.imshow("origin_img", self.img_bgr)
+                    self.path_pub.publish(lane_path)
 
-                cv2.waitKey(1)
+                    img_msg = self.bridge.cv2_to_compressed_imgmsg(img_lane_fit, dst_format='jpg')
+
+                    self.lane_img_pub.publish(img_msg)
+
+                    cv2.imshow("birdview", img_lane_fit)
+                    # cv2.imshow("img", img_lane)
+                    # cv2.imshow("origin_img", self.img_bgr)
+                    cv2.waitKey(1)
+
+                except:
+                    pass
 
                 rate.sleep()
+
 
     def odom_callback(self, msg):  ## Vehicl Status Subscriber
         self.status_msg = msg
@@ -125,7 +137,7 @@ class IMGParser:
         self.img_lane = cv2.bitwise_or(img_wlane, img_ylane)
         # cv2.imshow('white', img_wlane)
         # cv2.imshow('yellow', img_ylane)
-        cv2.imshow('lane', self.img_lane)
+        # cv2.imshow('lane', self.img_lane)
         return self.img_lane
 
     def mask_roi(self, img):
@@ -174,6 +186,7 @@ class IMGParser:
             point_np = cv2.circle(point_np, ctr, 2, (0, 0, 255), -1)
 
         return point_np
+
 
 
 class BEVTransform:
@@ -562,4 +575,3 @@ if __name__ == '__main__':
     image_parser = IMGParser()
 
     rospy.spin()
-
