@@ -9,3 +9,4 @@ else:
         print(1)
     else:
         print(0)
+# 윤년 연습좀 하기 ..
