@@ -131,7 +131,7 @@ class lc_path_pub:
 
         '''
         global_path = self.lc_1
-        print(global_path)
+        # print(global_path)
         rate = rospy.Rate(10)  # 10hz
         while not rospy.is_shutdown():
             if self.is_object_info == True and self.is_odom == True:
