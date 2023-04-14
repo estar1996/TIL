@@ -39,5 +39,5 @@ def dfs(r, c, d):
         return
 
 dfs(r, c, d)
-
+# dd
 print(cnt)
