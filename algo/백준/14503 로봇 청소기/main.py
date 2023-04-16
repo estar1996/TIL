@@ -29,7 +29,7 @@ def dfs(r, c, d):
         if arr[nx][ny] == 0:
             dfs(nx, ny, d)
             return
-
+# com
     nx = r - dx[d]
     ny = c - dy[d]
 
