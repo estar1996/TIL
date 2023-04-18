@@ -20,7 +20,7 @@ def dfs(r, c, d):
     if arr[r][c] == 0:
         arr[r][c] = 2
         cnt += 1
-
+# dddd
     for _ in range(4):
         d = (d - 1) % 4
         nx = r + dx[d]
