@@ -16,7 +16,7 @@ dy = [0, 1, 0, -1]
 
 def dfs(r, c, d):
     global cnt
-
+# commit
     if arr[r][c] == 0:
         arr[r][c] = 2
         cnt += 1
