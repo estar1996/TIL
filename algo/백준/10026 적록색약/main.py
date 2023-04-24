@@ -27,7 +27,7 @@ def red_dfs(x,y):
         if arr[nx][ny] == 1:
             if visited[nx][ny] != 1:
                 red_dfs(nx,ny)
-
+#ddd
 def green_dfs(x,y):
     dx = [1, 0, -1, 0]
     dy = [0, 1, 0, -1]
