@@ -1,12 +1,12 @@
 
 from collections import deque
 import sys
-# sys.stdin = open('input.txt')
+sys.stdin = open('input.txt')
 
 N = int(input())                    # 보드 크기
 K = int(input())                    # 사과의 개수
 
-arr = [[0] * (N) for _ in range(N)]
+arr = [[0] * (N+1) for _ in range(N+1)]
 
 for _ in range(K):
     x,y = map(int,input().split())
